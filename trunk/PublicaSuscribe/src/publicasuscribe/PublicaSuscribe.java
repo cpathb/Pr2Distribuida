@@ -6,7 +6,6 @@ package publicasuscribe;
  */
 public class PublicaSuscribe {
 
-
     public static void main(String[] args) {
         
     }
