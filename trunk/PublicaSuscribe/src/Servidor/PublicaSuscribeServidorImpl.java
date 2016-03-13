@@ -30,7 +30,7 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
             if(comprobarAlerta(alerta)){ // Comprobamos si la alerta es válida
                 alertas.add(alerta);
                 System.out.println("Registrada una nueva alerta");
-                alerta.getCliente().notificar("Añadida tu alerta de "+alerta.getTipo()+" para la empresa "+alerta.getNombreEmpresa()+" con el valor objetivo: "+alerta.getValorObjetivo()); //Notificamos el exito de la creación al cliente
+                alerta.getCliente().notificar("Añadida tu alerta de "+alerta.getTipo()+" para la empresa "+alerta.getNombreEmpresa().trim()+" con el valor objetivo: "+alerta.getValorObjetivo()); //Notificamos el exito de la creación al cliente
             }
             else{
                 alerta.getCliente().notificar("La alerta que quieres realizar no es válida");
@@ -69,8 +69,8 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
     public synchronized void PeticionDatos() throws IOException, InterruptedException{
         Document doc = Jsoup.connect("http://www.bolsamadrid.es/esp/aspx/Mercados/Precios.aspx?indice=ESI100000000").get();
         Elements elementos = doc.getElementById("ctl00_Contenido_tblAcciones").select("tr");
-        int i=0;
-        
+        int i=1;
+
         while(i<elementos.size()){
             String nombre;
             float valor;
@@ -90,9 +90,9 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
         /* Función para comprobar las alertas y notificar y eliminar las alertas que se cumplen */
         int i=0;
         while(i<alertas.size()){
-            if(alertas.get(i).getTipo().toLowerCase().compareTo("compra")==0){ // Si la alerta es de tipo compra
-                if(tabla.get(alertas.get(i).getNombreEmpresa())<=alertas.get(i).getValorObjetivo()){ // Cumple la condición de compra si el valor actual es menor o igual al objetivo
-                    alertas.get(i).getCliente().notificar("Tu alerta de "+alertas.get(i).getTipo()+" para la empresa "+alertas.get(i).getNombreEmpresa()+" con el valor objetivo: "+alertas.get(i).getValorObjetivo()); // Notificamos al cliente que se cumplio su alerta
+            if(alertas.get(i).getTipo().toLowerCase().trim().compareTo("compra")==0){ // Si la alerta es de tipo compra
+                if(tabla.get(alertas.get(i).getNombreEmpresa().trim())<=alertas.get(i).getValorObjetivo()){ // Cumple la condición de compra si el valor actual es menor o igual al objetivo
+                    alertas.get(i).getCliente().notificar("Tu alerta de "+alertas.get(i).getTipo()+" para la empresa "+alertas.get(i).getNombreEmpresa().trim()+" con el valor objetivo: "+alertas.get(i).getValorObjetivo()); // Notificamos al cliente que se cumplio su alerta
                     alertas.remove(i); // Eliminamos la alerta
                 }
                 else{ // No se cumple la condición, pasamos a la siguiente alerta
@@ -100,8 +100,8 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
                 }    
             }
             else{ // Si la alerta es de tipo venta 
-                if(tabla.get(alertas.get(i).getNombreEmpresa())>=alertas.get(i).getValorObjetivo()){ // Cumple la condición de venta si el valor actual es mayor o igual al objetivo
-                    alertas.get(i).getCliente().notificar("Tu alerta de "+alertas.get(i).getTipo()+" para la empresa "+alertas.get(i).getNombreEmpresa()+" con el valor objetivo: "+alertas.get(i).getValorObjetivo()); // Notificamos al cliente que se cumplio su alerta
+                if(tabla.get(alertas.get(i).getNombreEmpresa().trim())>=alertas.get(i).getValorObjetivo()){ // Cumple la condición de venta si el valor actual es mayor o igual al objetivo
+                    alertas.get(i).getCliente().notificar("Tu alerta de "+alertas.get(i).getTipo()+" para la empresa "+alertas.get(i).getNombreEmpresa().trim()+" con el valor objetivo: "+alertas.get(i).getValorObjetivo()); // Notificamos al cliente que se cumplio su alerta
                     alertas.remove(i); // Eliminamos la alerta
                 }
                 else{ // No se cumple la condición, pasamos a la siguiente alerta
@@ -113,8 +113,8 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
     
     public boolean comprobarAlerta(Alerta alerta){
         /* Comprueba la validez de una alerta que se intenta insertar */
-        if(tabla.containsKey(alerta.getNombreEmpresa())){
-            if(alerta.getTipo().toLowerCase().compareTo("compra")==0 || alerta.getTipo().toLowerCase().compareTo("venta")==0){
+        if(tabla.containsKey(alerta.getNombreEmpresa().trim())){
+            if(alerta.getTipo().toLowerCase().trim().compareTo("compra")==0 || alerta.getTipo().toLowerCase().trim().compareTo("venta")==0){
                 if(alerta.getValorObjetivo()>0){
                     return true;
                 }
