@@ -13,6 +13,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.IOException;
+import javax.swing.DefaultListModel;
 
 public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements PublicaSuscribeServidorInterface{
     private LinkedList<Alerta> alertas;
@@ -130,4 +131,13 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
             return false;
         }
     }
+    public synchronized DefaultListModel<String> EnviarEmpresas(PublicaSuscribeClienteInterface cliente){
+        /* Mensaje para notificar de las alertas al cliente */
+        DefaultListModel<String> modelo = new DefaultListModel();
+        tabla.keySet().forEach((s) -> {
+            System.out.println(s);
+            modelo.addElement(s);
+        });
+        return modelo;
+   }
 }

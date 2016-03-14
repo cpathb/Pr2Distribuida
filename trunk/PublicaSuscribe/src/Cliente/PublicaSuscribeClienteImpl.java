@@ -18,5 +18,5 @@ public class PublicaSuscribeClienteImpl extends UnicastRemoteObject implements P
         String mensajeEnvio = " Alerta Recibida: " + mensaje;
         System.out.println(mensajeEnvio);
         return mensajeEnvio;
-   }
+    }
 }
