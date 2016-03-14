@@ -11,14 +11,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.IOException;
+import javax.swing.DefaultListModel;
 
 public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements PublicaSuscribeServidorInterface{
-    private LinkedList<Alerta> alertas;
+    public LinkedList<Alerta> alertas;
     private HashMap<String, Float> tabla;
     
     PublicaSuscribeServidorImpl() throws RemoteException{
         super();
-        alertas =new LinkedList();
+        alertas = new LinkedList();
         tabla = new HashMap();
     }
     
@@ -50,18 +51,18 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
         }
     }
     
-    public synchronized void DesRegistroAlertas(Alerta alerta) throws RemoteException {
+    public synchronized void DesRegistroAlertas(PublicaSuscribeClienteInterface Objetocliente) throws RemoteException {
         /* Función para borrar todas las alertas de un cliente (Usado para cuando se vaya a cerrar un cliente */
         int i=0;
         while(i<alertas.size()){ // Mientras no hayamos recorrido todas las alertas o la lista de alertas no este vacia
-            if (alertas.get(i).getCliente().equals(alerta.getCliente())) { // Si coinciden los clientes se borra la alerta
+            if (alertas.get(i).getCliente().equals(Objetocliente)) { // Si coinciden los clientes se borra la alerta
                 alertas.remove(i);
             }
             else {
                 i++;
             }
         }
-        alerta.getCliente().notificar("Eliminadas todas tus alertas");
+        Objetocliente.notificar("Eliminadas todas tus alertas");
     }
     
     public synchronized void PeticionDatos() throws IOException, InterruptedException{
@@ -72,7 +73,7 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
         while(i<elementos.size()){
             String nombre;
             float valor;
-            nombre = elementos.get(i).select("td").get(0).text().trim().toLowerCase();
+            nombre = elementos.get(i).select("td").get(0).text().toLowerCase();
             valor = Float.parseFloat(elementos.get(i).select("td").get(1).text().replace(",", "."));
             if(tabla.containsKey(nombre)){
                 tabla.replace(nombre, valor);
@@ -89,8 +90,8 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
         int i=0;
         while(i<alertas.size()){
             if(alertas.get(i).getTipo().toLowerCase().trim().compareTo("compra")==0){ // Si la alerta es de tipo compra
-                if(tabla.get(alertas.get(i).getNombreEmpresa().toLowerCase().trim())<=alertas.get(i).getValorObjetivo()){ // Cumple la condición de compra si el valor actual es menor o igual al objetivo
-                    alertas.get(i).getCliente().notificar("Realizada tu alerta de "+alertas.get(i).getTipo()+" para la empresa "+alertas.get(i).getNombreEmpresa().trim()+" con el valor objetivo: "+alertas.get(i).getValorObjetivo()); // Notificamos al cliente que se cumplio su alerta
+                if(tabla.get(alertas.get(i).getNombreEmpresa().trim())<=alertas.get(i).getValorObjetivo()){ // Cumple la condición de compra si el valor actual es menor o igual al objetivo
+                    alertas.get(i).getCliente().notificar("Se ha cumplido tu alerta de "+alertas.get(i).getTipo()+" para la empresa "+alertas.get(i).getNombreEmpresa().trim()+" con el valor objetivo: "+alertas.get(i).getValorObjetivo()); // Notificamos al cliente que se cumplio su alerta
                     alertas.remove(i); // Eliminamos la alerta
                 }
                 else{ // No se cumple la condición, pasamos a la siguiente alerta
@@ -99,7 +100,7 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
             }
             else{ // Si la alerta es de tipo venta 
                 if(tabla.get(alertas.get(i).getNombreEmpresa().trim())>=alertas.get(i).getValorObjetivo()){ // Cumple la condición de venta si el valor actual es mayor o igual al objetivo
-                    alertas.get(i).getCliente().notificar("Realizada tu alerta de "+alertas.get(i).getTipo()+" para la empresa "+alertas.get(i).getNombreEmpresa().trim()+" con el valor objetivo: "+alertas.get(i).getValorObjetivo()); // Notificamos al cliente que se cumplio su alerta
+                    alertas.get(i).getCliente().notificar("Se ha cumplido tu alerta de "+alertas.get(i).getTipo()+" para la empresa "+alertas.get(i).getNombreEmpresa().trim()+" con el valor objetivo: "+alertas.get(i).getValorObjetivo()); // Notificamos al cliente que se cumplio su alerta
                     alertas.remove(i); // Eliminamos la alerta
                 }
                 else{ // No se cumple la condición, pasamos a la siguiente alerta
@@ -111,7 +112,7 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
     
     public boolean comprobarAlerta(Alerta alerta){
         /* Comprueba la validez de una alerta que se intenta insertar */
-        if(tabla.containsKey(alerta.getNombreEmpresa().trim().toLowerCase())){
+        if(tabla.containsKey(alerta.getNombreEmpresa().trim())){
             if(alerta.getTipo().toLowerCase().trim().compareTo("compra")==0 || alerta.getTipo().toLowerCase().trim().compareTo("venta")==0){
                 if(alerta.getValorObjetivo()>0){
                     return true;
@@ -128,4 +129,12 @@ public class PublicaSuscribeServidorImpl extends UnicastRemoteObject implements 
             return false;
         }
     }
+    public synchronized DefaultListModel<String> EnviarEmpresas(PublicaSuscribeClienteInterface cliente) throws RemoteException{
+        /* Mensaje para notificar de las alertas al cliente */
+        DefaultListModel<String> modelo = new DefaultListModel();
+        tabla.keySet().forEach((s) -> {
+            modelo.addElement(s);
+        });
+        return modelo;
+   }
 }

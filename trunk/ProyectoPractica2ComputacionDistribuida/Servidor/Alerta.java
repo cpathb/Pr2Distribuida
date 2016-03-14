@@ -5,7 +5,7 @@
 
 import java.io.Serializable;
 
-public class Alerta implements Serializable {
+public class Alerta implements Serializable{
     private PublicaSuscribeClienteInterface cliente;
     private String tipo;
     private String nombreEmpresa;

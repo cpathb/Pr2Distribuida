@@ -1,0 +1,26 @@
+Cliente:
+	cd Escritorio/PPublicaSuscribe/Finales/Cliente/
+	javac Interfaz.java
+	javac PublicaSuscribeClienteInterface.java
+	javac Alerta.java
+	javac PublicaSuscribeClienteImpl.java
+	rmic PublicaSuscribeClienteImpl -v1.1
+	cp PublicaSuscribeClienteInterface.class ../Servidor/
+	rm PublicaSuscribeClienteImpl.class
+	mv PublicaSuscribeClienteImpl_Stub.class ../Servidor/
+
+Servidor:
+	cd ../Servidor/
+	javac Alerta.java
+	javac PublicaSuscribeServidorInterface.java
+	javac PublicaSuscribeServidorImpl.java -classpath '.:.jsoup-1.8.3.jar' 
+	rmic PublicaSuscribeServidorImpl -v1.1
+	javac -cp '.:./jsoup-1.8.3.jar' PublicaSuscribeServidor.java
+	java -cp ".:./jsoup-1.8.3.jar" PublicaSuscribeServidor
+	cp PublicaSuscribeServidorInterface.class ../Cliente/
+	rm PublicaSuscribeServidorImpl.class
+	mv PublicaSuscribeServidorImpl_Stub.class ../Cliente/
+
+Cliente:
+	javac PublicaSuscribeCliente.java -classpath 
+	java PublicaSuscribeCliente
