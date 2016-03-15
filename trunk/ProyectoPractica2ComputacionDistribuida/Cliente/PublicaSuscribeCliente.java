@@ -62,11 +62,6 @@ public class PublicaSuscribeCliente extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Empresas:");
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9", "Item 10" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jList1.setToolTipText("");
         jScrollPane1.setViewportView(jList1);
@@ -263,7 +258,7 @@ public class PublicaSuscribeCliente extends javax.swing.JFrame {
         // Salir
         try{
             h.DesRegistroAlertas(Objetocliente);
-        }catch(RemoteException kk){}
+        }catch(Exception kk){}
         System.exit(0);
     }                          
 
@@ -271,7 +266,7 @@ public class PublicaSuscribeCliente extends javax.swing.JFrame {
         // Salir
         try{
             h.DesRegistroAlertas(Objetocliente);
-        }catch(RemoteException kk){}
+        }catch(Exception kk){}
         System.exit(0);
     }                 
 
@@ -336,9 +331,12 @@ public class PublicaSuscribeCliente extends javax.swing.JFrame {
                     interfaz.jList1.setModel(h.EnviarEmpresas(Objetocliente));
                     
                 } // end try 
+                catch (ConnectException ce) {
+                    interfaz.jTextArea1.append("Imposible conectar al servidor \n");
+                }
                 catch (Exception e) {
-                    System.out.println("Problema con el cliente: " + e);
-                } // end catch
+                    System.out.println("Problema con el cliente");
+                }
                 interfaz.jList1.setSelectedIndex(0); // Por defecto seleccionamos el primer elemento de la lista
                 interfaz.jList1.setCellRenderer(new CellRenderer()); // Hacemos que los elementos de la jlist tenga un color de fondo distinto entre elementos contiguos
                 interfaz.jList1.setBackground(Color.decode("#7246B2").brighter());
