@@ -11,6 +11,7 @@ public class Interfaz implements Serializable{
     
     public void rellenarAlerta(String mensaje){
         cajita.append(mensaje);
+        cajita.setCaretPosition(cajita.getDocument().getLength());
     }
     
 }

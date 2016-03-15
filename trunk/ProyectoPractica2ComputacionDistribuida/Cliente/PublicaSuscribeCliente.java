@@ -209,10 +209,12 @@ public class PublicaSuscribeCliente extends javax.swing.JFrame {
                         try{
                             h.RegistroAlerta(alerta);
                             interfaz.jTextArea1.append("Petición de alerta enviada \n");
+                            interfaz.jTextArea1.setCaretPosition(interfaz.jTextArea1.getDocument().getLength());
                             interfaz.jRadioButton1.setSelected(false);
                             interfaz.jTextField1.setText("");
                         }catch(RemoteException kk){
                             interfaz.jTextArea1.append("Error al enviar la alerta: \n");
+                            interfaz.jTextArea1.setCaretPosition(interfaz.jTextArea1.getDocument().getLength());
                             interfaz.jRadioButton1.setSelected(false);
                             interfaz.jTextField1.setText("");
                         }
@@ -222,10 +224,12 @@ public class PublicaSuscribeCliente extends javax.swing.JFrame {
                         try{
                             h.RegistroAlerta(alerta);
                             interfaz.jTextArea1.append("Petición de alerta enviada \n");
+                            interfaz.jTextArea1.setCaretPosition(interfaz.jTextArea1.getDocument().getLength());
                             interfaz.jRadioButton2.setSelected(false);
                             interfaz.jTextField1.setText("");
                         }catch(RemoteException kk){
                             interfaz.jTextArea1.append("Error al enviar la alerta: \n");
+                            interfaz.jTextArea1.setCaretPosition(interfaz.jTextArea1.getDocument().getLength());
                             interfaz.jRadioButton2.setSelected(false);
                             interfaz.jTextField1.setText("");
                         }
@@ -327,12 +331,14 @@ public class PublicaSuscribeCliente extends javax.swing.JFrame {
                     // Casteamos el objeto remoto a una intrerface
                     h = (PublicaSuscribeServidorInterface)Naming.lookup(registryURL);
                     interfaz.jTextArea1.append("Conectado con el servidor\n");
+                    interfaz.jTextArea1.setCaretPosition(interfaz.jTextArea1.getDocument().getLength());
                     Objetocliente = new PublicaSuscribeClienteImpl(txtArea); // Registramos una alerta
                     interfaz.jList1.setModel(h.EnviarEmpresas(Objetocliente));
                     
                 } // end try 
                 catch (ConnectException ce) {
                     interfaz.jTextArea1.append("Imposible conectar al servidor \n");
+                    interfaz.jTextArea1.setCaretPosition(interfaz.jTextArea1.getDocument().getLength());
                 }
                 catch (Exception e) {
                     System.out.println("Problema con el cliente");
